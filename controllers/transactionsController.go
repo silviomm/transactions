@@ -30,6 +30,7 @@ func PostTransaction(c *gin.Context) {
 	c.JSON(http.StatusOK, t.Id)
 }
 
+// todo: should be paginated
 func GetTransactions(c *gin.Context) {
 	var dto transaction.GetTransactionsDto
 	if err := c.ShouldBindQuery(&dto); err != nil {

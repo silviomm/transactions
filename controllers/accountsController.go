@@ -38,5 +38,5 @@ func PostAccount(c *gin.Context) {
 	}
 	a := account.Account{DocumentNumber: dto.DocumentNumber}
 	database.DB.Create(&a)
-	c.JSON(http.StatusOK, a)
+	c.JSON(http.StatusOK, gin.H{"account_id": a.Id})
 }
