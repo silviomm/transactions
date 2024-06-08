@@ -1,0 +1,38 @@
+version: '3'
+services:
+  api:
+    image: silviomm/pismo-challenge
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pismo-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - local-net
+    restart: always
+    env_file:
+    - .env
+  
+  postgres:
+    image: "postgres"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=pismo      
+    ports:
+      - "5432:5432"
+    networks:
+      - local-net
+    volumes:
+      - postgres:/data/postgres
+
+networks:
+  local-net:
+    driver: bridge
+    
+volumes:
+  postgres:
+  pgadmin:
