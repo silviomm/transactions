@@ -5,8 +5,7 @@ import (
 	"gorm.io/gorm/logger"
 	"log"
 	"os"
-	"pismo-challenge/models/account"
-	"pismo-challenge/models/transaction"
+	"pismo-challenge/database/repositories"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -39,12 +38,5 @@ func Connect() {
 	if err != nil {
 		log.Panic("Error connecting to database", err)
 	}
-	err = DB.AutoMigrate(&account.Account{})
-	if err != nil {
-		log.Panic("Error migrating Accounts table", err)
-	}
-	err = DB.AutoMigrate(&transaction.Transaction{})
-	if err != nil {
-		log.Panic("Error migrating Transactions table", err)
-	}
+	repositories.InitRepositories(*DB)
 }

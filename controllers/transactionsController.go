@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pismo-challenge/database"
@@ -16,14 +15,17 @@ func PostTransaction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if !services.Exists(dto.AccountId) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Account '%d' does not exists", dto.AccountId)})
+
+	err := services.ValidateTransactionDto(dto)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	t := transaction.Transaction{
 		AccountId:     dto.AccountId,
 		OperationType: dto.OperationTypeId,
-		Amount:        dto.Amount,
+		Amount:        services.GetAmountByOperationType(dto.Amount, dto.OperationTypeId),
 		EventDate:     time.Now(),
 	}
 	database.DB.Create(&t)

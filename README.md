@@ -8,6 +8,9 @@ Run:
 docker compose up --build
 ```
 
+## Usage
+You can import the Postman collection found in the root folder [here](/pismo-challenge.postman_collection.json) to make HTTP requests.
+
 ## Development
 Requirements: `go`, `docker`, `docker compose`
 
@@ -18,6 +21,3 @@ docker compose up postgres -d
 go build -o api
 ./api
 ```
-
-## Usage
-You can import the Postman collection found in the root folder [here](/pismo-challenge.postman_collection.json)

@@ -5,7 +5,7 @@ import "time"
 type CreateTransactionDto struct {
 	Amount          float64       `json:"amount" binding:"required"`
 	AccountId       int           `json:"account_id" binding:"required,gt=0"`
-	OperationTypeId OperationType `json:"operation_type_id" binding:"required,gt=0,lt=5"`
+	OperationTypeId OperationType `json:"operation_type_id" binding:"required"`
 }
 
 type GetTransactionsDto struct {

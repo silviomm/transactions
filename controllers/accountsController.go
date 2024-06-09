@@ -1,20 +1,20 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pismo-challenge/database"
+	"pismo-challenge/database/repositories"
 	"pismo-challenge/models/account"
-	"pismo-challenge/services"
+	"strconv"
 )
 
 func GetAccount(c *gin.Context) {
-	var a account.Account
-	id := c.Params.ByName("accountId")
-	database.DB.First(&a, id)
+	var a *account.Account
+	id, _ := strconv.Atoi(c.Params.ByName("accountId"))
+	a = repositories.Accounts.GetAccount(id)
 
-	if a.Id == 0 {
+	if a == nil {
 		c.JSON(http.StatusNotFound, gin.H{"result": "account not found"})
 		return
 	}
@@ -32,10 +32,13 @@ func PostAccount(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if services.ExistsByDocumentNumber(dto.DocumentNumber) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Document number '%s' already have an account", dto.DocumentNumber)})
-		return
-	}
+
+	// This business rule isn't specified in the pdf, so I commented it. But can be done like this:
+	//if services.ExistsByDocumentNumber(dto.DocumentNumber) {
+	//	c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Document number '%s' already have an account", dto.DocumentNumber)})
+	//	return
+	//}
+
 	a := account.Account{DocumentNumber: dto.DocumentNumber}
 	database.DB.Create(&a)
 	c.JSON(http.StatusOK, gin.H{"account_id": a.Id})
