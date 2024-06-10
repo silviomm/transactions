@@ -8,6 +8,8 @@ Run:
 docker compose up --build
 ```
 
+This will get the api up and running on `localhost:8080`.
+
 ## Usage
 You can import the Postman collection found in the root folder [here](/pismo-challenge.postman_collection.json) to make HTTP requests.
 
