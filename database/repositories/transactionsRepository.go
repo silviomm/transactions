@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"log"
 	"pismo-challenge/models/transaction"
@@ -11,16 +12,25 @@ type TransactionsRepository interface {
 	InitializeTransactionsRepository(db gorm.DB)
 	GetTransactionsToDischarge(accountId int) []transaction.Transaction
 	UpdateBalance(trId int, balance float64) error
+	InsertTransaction(transaction *transaction.Transaction) error
 }
 
 type DefaultTransactionsRepository struct{}
 
-func (s DefaultTransactionsRepository) UpdateBalance(trId int, balance float64) error {
+func (d DefaultTransactionsRepository) InsertTransaction(transaction *transaction.Transaction) error {
+	result := DB.Create(&transaction)
+	if result.Error != nil {
+		return errors.New("failed to create transaction")
+	}
+	return nil
+}
+
+func (d DefaultTransactionsRepository) UpdateBalance(trId int, balance float64) error {
 	result := DB.Model(&transaction.Transaction{}).Where("\"Id\" = ?", trId).Update("\"Balance\"", balance)
 	return result.Error
 }
 
-func (s DefaultTransactionsRepository) GetTransactionsToDischarge(accountId int) []transaction.Transaction {
+func (d DefaultTransactionsRepository) GetTransactionsToDischarge(accountId int) []transaction.Transaction {
 	transactionsToPayQuery := DB.Where("\"Balance\" < 0")
 	transactionsToPayQuery = transactionsToPayQuery.Where("\"AccountId\" = ?", accountId)
 	transactionsToPayQuery = transactionsToPayQuery.Where("\"OperationType\" = ?", 1)

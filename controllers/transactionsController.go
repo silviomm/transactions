@@ -6,7 +6,6 @@ import (
 	"pismo-challenge/database"
 	"pismo-challenge/models/transaction"
 	"pismo-challenge/services"
-	"time"
 )
 
 func PostTransaction(c *gin.Context) {
@@ -22,17 +21,13 @@ func PostTransaction(c *gin.Context) {
 		return
 	}
 
-	value := services.Transactions.GetAmountByOperationType(dto.Amount, dto.OperationTypeId)
-	t := transaction.Transaction{
-		AccountId:     dto.AccountId,
-		OperationType: dto.OperationTypeId,
-		Amount:        value,
-		EventDate:     time.Now(),
-		Balance:       value,
+	t, err := services.Transactions.CreateTransaction(&dto)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	database.DB.Create(&t)
 
-	if t.OperationType == 4 {
+	if services.Transactions.ShouldDischarge(t.OperationType) {
 		services.Transactions.Discharge(t)
 	}
 

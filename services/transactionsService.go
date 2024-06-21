@@ -6,6 +6,7 @@ import (
 	"math"
 	"pismo-challenge/database/repositories"
 	"pismo-challenge/models/transaction"
+	"time"
 )
 
 type TransactionService interface {
@@ -13,9 +14,34 @@ type TransactionService interface {
 	OperationExists(operationType transaction.OperationType) bool
 	GetAmountByOperationType(amount float64, operationType transaction.OperationType) float64
 	Discharge(t transaction.Transaction)
+	ShouldDischarge(operationType transaction.OperationType) bool
+	CreateTransaction(dto *transaction.CreateTransactionDto) (transaction.Transaction, error)
 }
 
 type DefaultTransactionService struct{}
+
+func (s DefaultTransactionService) CreateTransaction(dto *transaction.CreateTransactionDto) (transaction.Transaction, error) {
+	value := s.GetAmountByOperationType(dto.Amount, dto.OperationTypeId)
+	t := transaction.Transaction{
+		AccountId:     dto.AccountId,
+		OperationType: dto.OperationTypeId,
+		Amount:        value,
+		EventDate:     time.Now(),
+		Balance:       value,
+	}
+	err := repositories.Transactions.InsertTransaction(&t)
+	if err != nil {
+		return transaction.Transaction{}, err
+	}
+	return t, nil
+}
+
+func (s DefaultTransactionService) ShouldDischarge(operationType transaction.OperationType) bool {
+	if operationType == transaction.Payment {
+		return true
+	}
+	return false
+}
 
 func (s DefaultTransactionService) Discharge(t transaction.Transaction) {
 	ts := repositories.Transactions.GetTransactionsToDischarge(t.AccountId)
