@@ -16,19 +16,26 @@ func PostTransaction(c *gin.Context) {
 		return
 	}
 
-	err := services.ValidateTransactionDto(dto)
+	err := services.Transactions.ValidateTransactionDto(dto)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	value := services.Transactions.GetAmountByOperationType(dto.Amount, dto.OperationTypeId)
 	t := transaction.Transaction{
 		AccountId:     dto.AccountId,
 		OperationType: dto.OperationTypeId,
-		Amount:        services.GetAmountByOperationType(dto.Amount, dto.OperationTypeId),
+		Amount:        value,
 		EventDate:     time.Now(),
+		Balance:       value,
 	}
 	database.DB.Create(&t)
+
+	if t.OperationType == 4 {
+		services.Transactions.Discharge(t)
+	}
+
 	c.JSON(http.StatusOK, t.Id)
 }
 

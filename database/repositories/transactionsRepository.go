@@ -9,9 +9,28 @@ import (
 type TransactionsRepository interface {
 	GetOperation(operationType transaction.OperationType) *transaction.Operation
 	InitializeTransactionsRepository(db gorm.DB)
+	GetTransactionsToDischarge(accountId int) []transaction.Transaction
+	UpdateBalance(trId int, balance float64) error
 }
 
 type DefaultTransactionsRepository struct{}
+
+func (s DefaultTransactionsRepository) UpdateBalance(trId int, balance float64) error {
+	result := DB.Model(&transaction.Transaction{}).Where("\"Id\" = ?", trId).Update("\"Balance\"", balance)
+	return result.Error
+}
+
+func (s DefaultTransactionsRepository) GetTransactionsToDischarge(accountId int) []transaction.Transaction {
+	transactionsToPayQuery := DB.Where("\"Balance\" < 0")
+	transactionsToPayQuery = transactionsToPayQuery.Where("\"AccountId\" = ?", accountId)
+	transactionsToPayQuery = transactionsToPayQuery.Where("\"OperationType\" = ?", 1)
+	transactionsToPayQuery = transactionsToPayQuery.Or("\"OperationType\" = ?", 2)
+	transactionsToPayQuery = transactionsToPayQuery.Or("\"OperationType\" = ?", 3)
+	transactionsToPayQuery = transactionsToPayQuery.Order("\"EventDate\"")
+	var ts []transaction.Transaction
+	transactionsToPayQuery.Find(&ts)
+	return ts
+}
 
 func (d DefaultTransactionsRepository) InitializeTransactionsRepository(db gorm.DB) {
 	err := db.AutoMigrate(&transaction.Operation{})
@@ -20,6 +39,7 @@ func (d DefaultTransactionsRepository) InitializeTransactionsRepository(db gorm.
 	}
 	seedData(db)
 	err = db.AutoMigrate(&transaction.Transaction{})
+	db.Model(&transaction.Transaction{}).Where("\"Balance\" is NULL").Update("\"Balance\"", 0)
 	if err != nil {
 		log.Panic("Error migrating Transactions table", err)
 	}

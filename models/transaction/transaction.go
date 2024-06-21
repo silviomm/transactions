@@ -8,4 +8,5 @@ type Transaction struct {
 	OperationType OperationType `json:"operation_type_id" gorm:"column:OperationType"`
 	Amount        float64       `json:"amount"`
 	EventDate     time.Time     `json:"event_date" gorm:"column:EventDate"`
+	Balance       float64       `gorm:"column:Balance"`
 }
