@@ -49,6 +49,20 @@ func (mr *MockTransactionsRepositoryMockRecorder) GetOperation(operationType int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOperation", reflect.TypeOf((*MockTransactionsRepository)(nil).GetOperation), operationType)
 }
 
+// GetTransactionsToDischarge mocks base method.
+func (m *MockTransactionsRepository) GetTransactionsToDischarge(accountId int) []transaction.Transaction {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTransactionsToDischarge", accountId)
+	ret0, _ := ret[0].([]transaction.Transaction)
+	return ret0
+}
+
+// GetTransactionsToDischarge indicates an expected call of GetTransactionsToDischarge.
+func (mr *MockTransactionsRepositoryMockRecorder) GetTransactionsToDischarge(accountId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTransactionsToDischarge", reflect.TypeOf((*MockTransactionsRepository)(nil).GetTransactionsToDischarge), accountId)
+}
+
 // InitializeTransactionsRepository mocks base method.
 func (m *MockTransactionsRepository) InitializeTransactionsRepository(db gorm.DB) {
 	m.ctrl.T.Helper()
@@ -59,4 +73,32 @@ func (m *MockTransactionsRepository) InitializeTransactionsRepository(db gorm.DB
 func (mr *MockTransactionsRepositoryMockRecorder) InitializeTransactionsRepository(db interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitializeTransactionsRepository", reflect.TypeOf((*MockTransactionsRepository)(nil).InitializeTransactionsRepository), db)
+}
+
+// InsertTransaction mocks base method.
+func (m *MockTransactionsRepository) InsertTransaction(transaction *transaction.Transaction) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertTransaction", transaction)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InsertTransaction indicates an expected call of InsertTransaction.
+func (mr *MockTransactionsRepositoryMockRecorder) InsertTransaction(transaction interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertTransaction", reflect.TypeOf((*MockTransactionsRepository)(nil).InsertTransaction), transaction)
+}
+
+// UpdateBalance mocks base method.
+func (m *MockTransactionsRepository) UpdateBalance(trId int, balance float64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateBalance", trId, balance)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateBalance indicates an expected call of UpdateBalance.
+func (mr *MockTransactionsRepositoryMockRecorder) UpdateBalance(trId, balance interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBalance", reflect.TypeOf((*MockTransactionsRepository)(nil).UpdateBalance), trId, balance)
 }

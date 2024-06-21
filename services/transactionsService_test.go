@@ -9,6 +9,33 @@ import (
 	"testing"
 )
 
+func TestShouldNotDischargeOperationDifferentThanPayment(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	InitMocks(ctrl)
+	defer ctrl.Finish()
+
+	tests := []struct {
+		operationType transaction.OperationType
+	}{
+		{transaction.BuyInCash},
+		{transaction.BuyInInstallments},
+		{transaction.Withdraw},
+	}
+	for _, tt := range tests {
+		result := Transactions.ShouldDischarge(tt.operationType)
+		assert.False(t, result)
+	}
+}
+
+func TestShouldDischargeOnlyPaymentOperation(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	InitMocks(ctrl)
+	defer ctrl.Finish()
+
+	result := Transactions.ShouldDischarge(transaction.Payment)
+	assert.True(t, result)
+}
+
 func TestValidateTransactionDto_InvalidOperation(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	InitMocks(ctrl)

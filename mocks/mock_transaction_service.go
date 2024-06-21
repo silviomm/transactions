@@ -34,6 +34,33 @@ func (m *MockTransactionService) EXPECT() *MockTransactionServiceMockRecorder {
 	return m.recorder
 }
 
+// CreateTransaction mocks base method.
+func (m *MockTransactionService) CreateTransaction(dto *transaction.CreateTransactionDto) (transaction.Transaction, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTransaction", dto)
+	ret0, _ := ret[0].(transaction.Transaction)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTransaction indicates an expected call of CreateTransaction.
+func (mr *MockTransactionServiceMockRecorder) CreateTransaction(dto interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTransaction", reflect.TypeOf((*MockTransactionService)(nil).CreateTransaction), dto)
+}
+
+// Discharge mocks base method.
+func (m *MockTransactionService) Discharge(t transaction.Transaction) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Discharge", t)
+}
+
+// Discharge indicates an expected call of Discharge.
+func (mr *MockTransactionServiceMockRecorder) Discharge(t interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Discharge", reflect.TypeOf((*MockTransactionService)(nil).Discharge), t)
+}
+
 // GetAmountByOperationType mocks base method.
 func (m *MockTransactionService) GetAmountByOperationType(amount float64, operationType transaction.OperationType) float64 {
 	m.ctrl.T.Helper()
@@ -60,6 +87,20 @@ func (m *MockTransactionService) OperationExists(operationType transaction.Opera
 func (mr *MockTransactionServiceMockRecorder) OperationExists(operationType interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OperationExists", reflect.TypeOf((*MockTransactionService)(nil).OperationExists), operationType)
+}
+
+// ShouldDischarge mocks base method.
+func (m *MockTransactionService) ShouldDischarge(operationType transaction.OperationType) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ShouldDischarge", operationType)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// ShouldDischarge indicates an expected call of ShouldDischarge.
+func (mr *MockTransactionServiceMockRecorder) ShouldDischarge(operationType interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ShouldDischarge", reflect.TypeOf((*MockTransactionService)(nil).ShouldDischarge), operationType)
 }
 
 // ValidateTransactionDto mocks base method.
